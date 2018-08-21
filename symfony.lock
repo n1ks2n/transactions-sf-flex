@@ -116,6 +116,9 @@
     "psr/simple-cache": {
         "version": "1.0.1"
     },
+    "roave/security-advisories": {
+        "version": "dev-master"
+    },
     "sensio/framework-extra-bundle": {
         "version": "5.2",
         "recipe": {
@@ -124,6 +127,9 @@
             "version": "5.2",
             "ref": "fb7e19da7f013d0d422fa9bce16f5c510e27609b"
         }
+    },
+    "squizlabs/php_codesniffer": {
+        "version": "3.3.1"
     },
     "swiftmailer/swiftmailer": {
         "version": "v6.1.2"

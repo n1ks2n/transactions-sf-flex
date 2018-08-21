@@ -1,0 +1,22 @@
+version: '3'
+
+services:
+  db_transactions:
+    image: postgres:9.6-alpine
+    environment:
+    - POSTGRES_DB=db_transactions
+    - POSTGRES_USER=user
+    - POSTGRES_PASSWORD=PwD34451DeV
+    ports:
+    - 8811:5432
+
+  php_transactions:
+    build: docker/php
+    container_name: php_transactions
+    restart: always
+    tty: true
+    volumes:
+    - .:/srv/transactions:delegated
+    ports:
+    - 8812:9000
+    - 8813:9001
