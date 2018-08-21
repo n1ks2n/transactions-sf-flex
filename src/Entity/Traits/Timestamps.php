@@ -25,7 +25,7 @@ trait Timestamps
     /**
      * @return DateTimeInterface
      */
-    public function getCreatedAt(): DateTimeInterface
+    public function getCreatedAt(): ?DateTimeInterface
     {
         return $this->createdAt;
     }
@@ -45,7 +45,7 @@ trait Timestamps
     /**
      * @return DateTimeInterface
      */
-    public function getUpdatedAt(): DateTimeInterface
+    public function getUpdatedAt(): ?DateTimeInterface
     {
         return $this->updatedAt;
     }

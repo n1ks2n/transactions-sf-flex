@@ -20,3 +20,13 @@ services:
     ports:
     - 8812:9000
     - 8813:9001
+  rabbitMq:
+    image: rabbitmq:3-management
+    ports:
+    - 8810:15672
+    - 8814:5672
+    - 8815:5671
+    environment:
+      RABBITMQ_DEFAULT_PASS: pass
+      RABBITMQ_DEFAULT_USER: user
+      RABBITMQ_DEFAULT_VHOST: vhost

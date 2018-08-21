@@ -10,7 +10,7 @@ interface Timestampable
     /**
      * @return DateTimeInterface
      */
-    public function getCreatedAt(): DateTimeInterface;
+    public function getCreatedAt(): ?DateTimeInterface;
 
     /**
      * @param DateTimeInterface $createdAt
@@ -22,7 +22,7 @@ interface Timestampable
     /**
      * @return DateTimeInterface
      */
-    public function getUpdatedAt(): DateTimeInterface;
+    public function getUpdatedAt(): ?DateTimeInterface;
 
     /**
      * @param DateTimeInterface $updatedAt

@@ -81,7 +81,7 @@ class Account implements Timestampable, SoftDeletable
      */
     public function getActiveBalance(): float
     {
-        return $this->activeBalance;
+        return (float) $this->activeBalance;
     }
 
     /**
@@ -101,7 +101,7 @@ class Account implements Timestampable, SoftDeletable
      */
     public function getBlockedBalance(): float
     {
-        return $this->blockedBalance;
+        return (float) $this->blockedBalance;
     }
 
     /**
@@ -121,7 +121,7 @@ class Account implements Timestampable, SoftDeletable
      */
     public function getTotalBalance(): float
     {
-        return $this->totalBalance;
+        return (float) $this->totalBalance;
     }
 
     /**
@@ -202,6 +202,34 @@ class Account implements Timestampable, SoftDeletable
             $this->transactions->removeElement($transaction);
             $transaction->setAccount(null);
         }
+
+        return $this;
+    }
+
+    /**
+     * @return int
+     */
+    public function getId(): int
+    {
+        return $this->id;
+    }
+
+    /**
+     * @return string
+     */
+    public function getHolderLastName(): string
+    {
+        return $this->holderLastName;
+    }
+
+    /**
+     * @param string $holderLastName
+     *
+     * @return Account
+     */
+    public function setHolderLastName(string $holderLastName): self
+    {
+        $this->holderLastName = $holderLastName;
 
         return $this;
     }

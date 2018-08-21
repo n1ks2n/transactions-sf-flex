@@ -29,3 +29,13 @@ services:
 
     # add more service definitions when explicit configuration is needed
     # please note that last definitions always *replace* previous ones
+
+    App\Listener\TimestampableListener:
+        tags:
+            - { name: doctrine.event_listener, event: prePersist, lazy: true }
+
+    App\Listener\TransactionProcessedThroughAccountListener:
+        arguments:
+            $producer: '@old_sound_rabbit_mq.transaction_producer'
+        tags:
+            - {  name: kernel.event_listener, event: account.balance.updated, method: onTransactionProcessed}

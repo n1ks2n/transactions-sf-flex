@@ -1,0 +1,25 @@
+old_sound_rabbit_mq:
+  connections:
+    default:
+      host: 'rabbitMq'
+      port: 5672
+      user: 'user'
+      password: 'pass'
+      vhost: 'vhost'
+  producers:
+    transaction:
+      connection: default
+      exchange_options: {name: 'transaction-producer', type: direct}
+  consumers:
+    credit_consumer:
+      connection: default
+      queue_options: {name: 'credit-queue'}
+      callback: App\MessageBroker\CreditConsumer
+    debit_consumer:
+      connection: default
+      queue_options: {name: 'debit-queue'}
+      callback: App\MessageBroker\DebitConsumer
+    transfer_consumer:
+      connection: default
+      queue_options: {name: 'transfer-queue'}
+      callback: App\MessageBroker\TransferConsumer
