@@ -7,6 +7,9 @@ use Doctrine\DBAL\Platforms\AbstractPlatform;
 use Doctrine\DBAL\Types\Type;
 use RuntimeException;
 
+/**
+ * @SuppressWarnings(PHPMD)
+ */
 abstract class BaseIntEnumType extends Type
 {
     /**

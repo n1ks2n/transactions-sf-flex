@@ -12,19 +12,20 @@ class AccountBalanceCalculator
     public function calculate(Account $account, Transaction $transaction): Account
     {
         $transactionStatus = $transaction->getStatus();
+        $totalBalance = $account->getTotalBalance();
+        $account->setTotalBalance($totalBalance + $transaction->getAmount());
 
         if ($transactionStatus === TransactionStatusEnum::CREATED ||
             $transactionStatus === TransactionStatusEnum::PROCESSING
         ) {
             $blockedBalance = $account->getBlockedBalance();
             $account->setBlockedBalance($blockedBalance + $transaction->getAmount());
-        } else {
-            $activeBalance = $account->getActiveBalance();
-            $account->setActiveBalance($activeBalance + $transaction->getAmount());
+
+            return $account;
         }
 
-        $totalBalance = $account->getTotalBalance();
-        $account->setTotalBalance($totalBalance + $transaction->getAmount());
+        $activeBalance = $account->getActiveBalance();
+        $account->setActiveBalance($activeBalance + $transaction->getAmount());
 
         return $account;
     }
