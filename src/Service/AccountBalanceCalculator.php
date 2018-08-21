@@ -13,8 +13,7 @@ class AccountBalanceCalculator
     {
         $transactionStatus = $transaction->getStatus();
 
-        if (
-            $transactionStatus === TransactionStatusEnum::CREATED ||
+        if ($transactionStatus === TransactionStatusEnum::CREATED ||
             $transactionStatus === TransactionStatusEnum::PROCESSING
         ) {
             $blockedBalance = $account->getBlockedBalance();

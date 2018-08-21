@@ -33,6 +33,4 @@ class TransferConsumer extends BaseTransactionOperationConsumer
 
         return $debitSuccess && $creditSuccess;
     }
-
-
 }

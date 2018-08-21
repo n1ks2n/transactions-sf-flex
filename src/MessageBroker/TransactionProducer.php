@@ -17,6 +17,5 @@ class TransactionProducer implements ProducerInterface
      */
     public function publish($msgBody, $routingKey = '', $additionalProperties = array())
     {
-
     }
 }

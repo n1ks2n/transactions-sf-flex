@@ -32,12 +32,12 @@ class TransactionDTOBuilder
     public function build(array $message): TransactionDTO
     {
 
-        if (
-        !isset(
+        if (!isset(
             $message['requestId'],
             $message['accountId'],
             $message['amount'],
-            $message['type'])
+            $message['type']
+        )
         ) {
             throw new WrongAMQPMessageFormat(
                 'Message received is malformed!'

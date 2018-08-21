@@ -1,11 +1,11 @@
 old_sound_rabbit_mq:
   connections:
     default:
-      host: 'rabbitMq'
-      port: 5672
-      user: 'user'
-      password: 'pass'
-      vhost: 'vhost'
+      host: '%env(resolve:RABBITMQ_HOST)%'
+      port: '%env(resolve:RABBITMQ_PORT)%'
+      user: '%env(resolve:RABBITMQ_USER)%'
+      password: '%env(resolve:RABBITMQ_PASSWORD)%'
+      vhost: '%env(resolve:RABBITMQ_VHOST)%'
   producers:
     transaction:
       connection: default

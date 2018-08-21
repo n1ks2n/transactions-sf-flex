@@ -104,6 +104,9 @@
     "ocramius/proxy-manager": {
         "version": "2.1.1"
     },
+    "pdepend/pdepend": {
+        "version": "2.5.2"
+    },
     "php-amqplib/php-amqplib": {
         "version": "v2.7.2"
     },
@@ -124,6 +127,9 @@
     },
     "phpdocumentor/type-resolver": {
         "version": "0.4.0"
+    },
+    "phpmd/phpmd": {
+        "version": "2.6.0"
     },
     "psr/cache": {
         "version": "1.0.1"

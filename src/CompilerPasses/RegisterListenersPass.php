@@ -14,6 +14,5 @@ class RegisterListenersPass implements CompilerPassInterface
      */
     public function process(ContainerBuilder $container): void
     {
-        
     }
 }

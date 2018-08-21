@@ -19,8 +19,10 @@ final class Version20180821084922 extends AbstractMigration
      */
     public function up(Schema $schema): void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql',
-            'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf(
+            $this->connection->getDatabasePlatform()->getName() !== 'postgresql',
+            'Migration can only be executed safely on \'postgresql\'.'
+        );
 
         $this->addSql('CREATE SEQUENCE transactions_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
         $this->addSql('CREATE SEQUENCE accounts_id_seq INCREMENT BY 1 MINVALUE 1 START 1');
@@ -40,8 +42,10 @@ final class Version20180821084922 extends AbstractMigration
      */
     public function down(Schema $schema): void
     {
-        $this->abortIf($this->connection->getDatabasePlatform()->getName() !== 'postgresql',
-            'Migration can only be executed safely on \'postgresql\'.');
+        $this->abortIf(
+            $this->connection->getDatabasePlatform()->getName() !== 'postgresql',
+            'Migration can only be executed safely on \'postgresql\'.'
+        );
 
         $this->addSql('ALTER TABLE transactions DROP CONSTRAINT FK_EAA81A4C9B6B5FBA');
         $this->addSql('DROP SEQUENCE transactions_id_seq CASCADE');
