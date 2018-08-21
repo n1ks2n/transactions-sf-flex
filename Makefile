@@ -18,7 +18,7 @@ app.tests.all:
 	make app.behat
 
 app.phpunit:
-	docker exec -t php_transactions /srv/survey-service/bin/phpunit
+	docker exec -t php_transactions /srv/transactions/bin/phpunit
 
 app.behat:
 	docker exec -t php_transactions vendor/bin/behat --no-interaction
@@ -33,8 +33,8 @@ app.build.ci:
 
 app.build.dev.no_docker:
 	make app.composer.install
-	#make app.doctrine_migrations
-	#make app.doctrine.load_fixtures
+	make app.doctrine_migrations
+	make app.doctrine.load_fixtures
 
 app.build.dev:
 	$(shell if [ "$(shell uname)" = 'Linux' ]; \
