@@ -81,8 +81,7 @@ class TransactionService implements OperationServiceInterface
             throw new RuntimeException('Trying to create transaction for not existing account!');
         }
 
-        if (
-            $transactionDTO->getType() === TransactionTypeEnum::DEBIT &&
+        if ($transactionDTO->getType() === TransactionTypeEnum::DEBIT &&
             abs($transactionDTO->getAmount()) > $account->getActiveBalance()
         ) {
             throw new AccountInsufficientFundsException('Not enough funds for operation!');
