@@ -98,6 +98,8 @@ class TransactionUpdateConsumer extends AbstractConsumer
                 new TransactionStatusChangedEvent($transaction)
             );
 
+            echo 'Successfully dispatched job. Updated transaction: ' . $transaction->getId() . "\n";
+
             return true;
         } catch (WrongAMQPMessageFormatException $exception) {
             return $this->releasableError($exception->getMessage());

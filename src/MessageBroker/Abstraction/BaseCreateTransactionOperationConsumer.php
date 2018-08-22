@@ -82,7 +82,7 @@ abstract class BaseCreateTransactionOperationConsumer extends AbstractConsumer
                 TransactionProcessedThroughAccount::NAME,
                 new TransactionProcessedThroughAccount($transaction)
             );
-            echo 'Successfully dispatched job. Amount: ' . $transaction->getAmount();
+            echo 'Successfully dispatched job. Amount: ' . $transaction->getAmount() . "\n";
 
             return true;
         } catch (WrongAMQPMessageFormatException $exception) {

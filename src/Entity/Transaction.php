@@ -97,7 +97,7 @@ class Transaction implements Timestampable, SoftDeletable
      */
     public function getAmount(): float
     {
-        return $this->amount;
+        return (float) $this->amount;
     }
 
     /**

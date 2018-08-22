@@ -32,6 +32,7 @@ app.build.dev:
 
 	make app.docker_compose.build
 	make app.build.dev.no_docker
+	make app.setup_rabbitmq
 
 app.composer.install:
 	docker exec -t php_transactions composer install --optimize-autoloader
@@ -39,6 +40,9 @@ app.composer.install:
 app.docker_compose.build:
 	docker-compose -f docker-compose.yml pull
 	docker-compose -f docker-compose.yml up -d
+
+app.setup_rabbitmq:
+	docker exec -t php_transactions bin/console rabbitmq:setup-fabric
 
 app.doctrine_migrations.ci:
 	docker exec -t php_transactions bin/console d:m:m --allow-no-migration -n -vvv

@@ -38,8 +38,36 @@ transfer-queue:
   "to": 3 (id аккаунта получателя в системе)
 }
 ```
+
 Операция трансфера представляет собой дебетование отправителя на сумму n и кредитование получателя на эту же сумму,
 связь операций проходит через сквозной requestId.
+
+
+transaction-update:
+```
+{
+  "id": 20 - id транзакции в БД
+  "status": "processing"/"processed"/"error" - доступные для смены статусы транзакции
+}
+```
+
+## Запуск consumer'ов
+
+DEBIT CREATE:
+
+``bin/sf rabbitmq:consumer debit_create``
+
+CREDIT CREATE:
+
+``bin/sf rabbitmq:consumer credit_create``
+
+TRANSFER CREATE:
+
+``bin/sf rabbitmq:consumer transfer_create``
+
+TRANSACTION UPDATE:
+
+``bin/sf rabbitmq:consumer transaction_update``
 
 ###  Code style
 
@@ -54,3 +82,4 @@ transfer-queue:
 ### Тесты
 
 ``make app.phpunit``
+
