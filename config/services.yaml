@@ -38,4 +38,4 @@ services:
         arguments:
             $producer: '@old_sound_rabbit_mq.transaction_producer'
         tags:
-            - {  name: kernel.event_listener, event: account.balance.updated, method: onTransactionProcessed}
+            - {  name: kernel.event_listener, event: transaction.processed, method: onTransactionProcessed}

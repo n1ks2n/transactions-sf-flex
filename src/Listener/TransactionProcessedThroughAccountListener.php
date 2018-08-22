@@ -34,7 +34,6 @@ class TransactionProcessedThroughAccountListener
      */
     public function onTransactionProcessed(Event $event): void
     {
-        var_dump(123);
         $transaction = $event->getTransaction();
         $message = json_encode($this->transactionMapper->mapToArray($transaction));
         $this->producer->publish($message);

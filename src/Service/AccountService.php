@@ -59,6 +59,7 @@ class AccountService
         $account->addTransaction($transaction);
         $this->entityManager->persist($account);
         $this->entityManager->flush();
+        $this->entityManager->commit();
         $this->dispatcher->dispatch(AccountBalanceUpdatedEvent::NAME, new AccountBalanceUpdatedEvent($account));
 
         return $account;

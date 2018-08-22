@@ -4,7 +4,7 @@ declare(strict_types=1);
 namespace App\MessageBroker\Abstraction;
 
 use App\DTO\Builder\TransactionDTOBuilder;
-use App\Event\AccountBalanceUpdatedEvent;
+use App\Entity\Transaction;
 use App\Event\TransactionProcessedThroughAccount;
 use App\Exception\TransactionExistsException;
 use App\Exception\WrongAMQPMessageFormat;
@@ -13,6 +13,7 @@ use App\Service\TransactionOperations\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\PessimisticLockException;
+use Exception;
 use OldSound\RabbitMqBundle\RabbitMq\ConsumerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -70,33 +71,32 @@ abstract class BaseTransactionOperationConsumer implements ConsumerInterface
             $creditDTO = $this->builder->build($decodedMessage);
             $transaction = $this->transactionService->create($creditDTO);
             $this->accountService->updateAccountBalance($transaction);
-            $this->eventDispatcher->dispatch(AccountBalanceUpdatedEvent::NAME, new TransactionProcessedThroughAccount($transaction));
+            $this->eventDispatcher->dispatch(TransactionProcessedThroughAccount::NAME, new TransactionProcessedThroughAccount($transaction));
             echo 'Successfully dispatched job. Amount: ' . $transaction->getAmount();
 
             return true;
         } catch (WrongAMQPMessageFormat $exception) {
             return $this->releasableError($exception->getMessage());
         } catch (OptimisticLockException $exception) {
-            $this->printError($exception->getMessage());
-
-            if ($transaction !== null) {
-                $this->entityManager->remove($transaction);
-                $this->entityManager->flush();
-            }
-
-            return false;
+            return $this->processDBTransactionException($exception, $transaction ?? null);
         } catch (PessimisticLockException $exception) {
-            $this->printError($exception->getMessage());
-
-            if ($transaction !== null) {
-                $this->entityManager->remove($transaction);
-                $this->entityManager->flush();
-            }
-
-            return false;
+            return $this->processDBTransactionException($exception, $transaction ?? null);
         } catch (TransactionExistsException $exception) {
             return $this->releasableError($exception->getMessage());
         }
+    }
+
+    protected function processDBTransactionException(Exception $exception, ?Transaction $transaction): bool
+    {
+        $this->printError($exception->getMessage());
+
+        if ($transaction !== null) {
+            $this->entityManager->remove($transaction);
+            $this->entityManager->flush();
+            $this->entityManager->rollback();
+        }
+
+        return false;
     }
 
     /**
