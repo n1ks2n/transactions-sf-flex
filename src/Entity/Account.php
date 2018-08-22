@@ -44,13 +44,6 @@ class Account implements Timestampable, SoftDeletable
     private $blockedBalance;
 
     /**
-     * @var float
-     *
-     * @ORM\Column(name="total_balance", type="decimal", precision=19, scale=4)
-     */
-    private $totalBalance;
-
-    /**
      * @var string
      *
      * @ORM\Column(name="holder_name", type="string")
@@ -121,19 +114,7 @@ class Account implements Timestampable, SoftDeletable
      */
     public function getTotalBalance(): float
     {
-        return (float) $this->totalBalance;
-    }
-
-    /**
-     * @param float $totalBalance
-     *
-     * @return Account
-     */
-    public function setTotalBalance(float $totalBalance): self
-    {
-        $this->totalBalance = $totalBalance;
-
-        return $this;
+        return (float) $this->activeBalance + $this->blockedBalance;
     }
 
     /**

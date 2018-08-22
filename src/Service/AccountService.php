@@ -52,14 +52,12 @@ class AccountService
      */
     public function updateAccountBalance(Transaction $transaction): Account
     {
-        $this->entityManager->beginTransaction();
         $account = $transaction->getAccount();
         $this->entityManager->lock($account, LockMode::PESSIMISTIC_READ);
         $account = $this->balanceCalculator->calculate($account, $transaction);
         $account->addTransaction($transaction);
         $this->entityManager->persist($account);
         $this->entityManager->flush();
-        $this->entityManager->commit();
         $this->dispatcher->dispatch(AccountBalanceUpdatedEvent::NAME, new AccountBalanceUpdatedEvent($account));
 
         return $account;

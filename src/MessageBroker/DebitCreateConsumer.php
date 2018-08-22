@@ -4,10 +4,10 @@ declare(strict_types=1);
 namespace App\MessageBroker;
 
 use App\Enum\TransactionTypeEnum;
-use App\MessageBroker\Abstraction\BaseTransactionOperationConsumer;
+use App\MessageBroker\Abstraction\BaseCreateTransactionOperationConsumer;
 use PhpAmqpLib\Message\AMQPMessage;
 
-class CreditConsumer extends BaseTransactionOperationConsumer
+class DebitCreateConsumer extends BaseCreateTransactionOperationConsumer
 {
     /**
      * @param AMQPMessage $msg The message
@@ -21,8 +21,8 @@ class CreditConsumer extends BaseTransactionOperationConsumer
             return $this->releasableError('Wrong message format');
         }
 
-        $decodedMessage['type'] = TransactionTypeEnum::CREDIT;
+        $decodedMessage['type'] = TransactionTypeEnum::DEBIT;
 
-        return $this->processTransaction($decodedMessage);
+        return $this->processCreateTransaction($decodedMessage);
     }
 }

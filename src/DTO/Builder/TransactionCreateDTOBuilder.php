@@ -3,11 +3,12 @@ declare(strict_types=1);
 
 namespace App\DTO\Builder;
 
+use App\DTO\Constants\TransactionDTOTypes;
 use App\DTO\Factory\TransactionDTOFactory;
-use App\DTO\TransactionDTO;
-use App\Exception\WrongAMQPMessageFormat;
+use App\DTO\TransactionCreateDTO;
+use App\Exception\WrongAMQPMessageFormatException;
 
-class TransactionDTOBuilder
+class TransactionCreateDTOBuilder
 {
     /**
      * @var TransactionDTOFactory
@@ -25,11 +26,11 @@ class TransactionDTOBuilder
     /**
      * @param array $message
      *
-     * @return TransactionDTO
+     * @return TransactionCreateDTO
      *
-     * @throws WrongAMQPMessageFormat
+     * @throws WrongAMQPMessageFormatException
      */
-    public function build(array $message): TransactionDTO
+    public function build(array $message): TransactionCreateDTO
     {
 
         if (!isset(
@@ -37,14 +38,13 @@ class TransactionDTOBuilder
             $message['accountId'],
             $message['amount'],
             $message['type']
-        )
-        ) {
-            throw new WrongAMQPMessageFormat(
+        )) {
+            throw new WrongAMQPMessageFormatException(
                 'Message received is malformed!'
             );
         }
 
-        $dto = $this->factory->make();
+        $dto = $this->factory->make(TransactionDTOTypes::CREATE);
 
         return $dto
             ->setRequestId($message['requestId'])

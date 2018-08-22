@@ -7,6 +7,11 @@ use App\Entity\Transaction;
 
 class TransactionMapper
 {
+    /**
+     * @param Transaction $transaction
+     *
+     * @return array
+     */
     public function mapToArray(Transaction $transaction): array
     {
         return [

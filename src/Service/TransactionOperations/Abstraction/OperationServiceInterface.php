@@ -3,15 +3,15 @@ declare(strict_types=1);
 
 namespace App\Service\TransactionOperations\Abstraction;
 
-use App\DTO\TransactionDTO;
+use App\DTO\TransactionCreateDTO;
 use App\Entity\Transaction;
 
 interface OperationServiceInterface
 {
     /**
-     * @param TransactionDTO $transactionDTO
+     * @param TransactionCreateDTO $transactionDTO
      *
      * @return Transaction
      */
-    public function create(TransactionDTO $transactionDTO): Transaction;
+    public function create(TransactionCreateDTO $transactionDTO): Transaction;
 }

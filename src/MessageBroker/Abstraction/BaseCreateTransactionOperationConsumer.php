@@ -3,24 +3,24 @@ declare(strict_types=1);
 
 namespace App\MessageBroker\Abstraction;
 
-use App\DTO\Builder\TransactionDTOBuilder;
+use App\DTO\Builder\TransactionCreateDTOBuilder;
 use App\Entity\Transaction;
 use App\Event\TransactionProcessedThroughAccount;
+use App\Exception\AccountInsufficientFundsException;
 use App\Exception\TransactionExistsException;
-use App\Exception\WrongAMQPMessageFormat;
+use App\Exception\WrongAMQPMessageFormatException;
 use App\Service\AccountService;
 use App\Service\TransactionOperations\TransactionService;
 use Doctrine\ORM\EntityManagerInterface;
 use Doctrine\ORM\OptimisticLockException;
 use Doctrine\ORM\PessimisticLockException;
 use Exception;
-use OldSound\RabbitMqBundle\RabbitMq\ConsumerInterface;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
-abstract class BaseTransactionOperationConsumer implements ConsumerInterface
+abstract class BaseCreateTransactionOperationConsumer extends AbstractConsumer
 {
     /**
-     * @var TransactionDTOBuilder
+     * @var TransactionCreateDTOBuilder
      */
     private $builder;
 
@@ -45,14 +45,14 @@ abstract class BaseTransactionOperationConsumer implements ConsumerInterface
     private $eventDispatcher;
 
     /**
-     * @param TransactionDTOBuilder $builder
+     * @param TransactionCreateDTOBuilder $builder
      * @param TransactionService $transactionService
      * @param AccountService $accountService
      * @param EntityManagerInterface $entityManager
      * @param EventDispatcherInterface $eventDispatcher
      */
     public function __construct(
-        TransactionDTOBuilder $builder,
+        TransactionCreateDTOBuilder $builder,
         TransactionService $transactionService,
         AccountService $accountService,
         EntityManagerInterface $entityManager,
@@ -65,17 +65,27 @@ abstract class BaseTransactionOperationConsumer implements ConsumerInterface
         $this->eventDispatcher = $eventDispatcher;
     }
 
-    protected function processTransaction(array $decodedMessage): bool
+    /**
+     * @param array $decodedMessage
+     *
+     * @return bool
+     */
+    protected function processCreateTransaction(array $decodedMessage): bool
     {
         try {
             $creditDTO = $this->builder->build($decodedMessage);
             $transaction = $this->transactionService->create($creditDTO);
+            $this->entityManager->beginTransaction();
             $this->accountService->updateAccountBalance($transaction);
-            $this->eventDispatcher->dispatch(TransactionProcessedThroughAccount::NAME, new TransactionProcessedThroughAccount($transaction));
+            $this->entityManager->commit();
+            $this->eventDispatcher->dispatch(
+                TransactionProcessedThroughAccount::NAME,
+                new TransactionProcessedThroughAccount($transaction)
+            );
             echo 'Successfully dispatched job. Amount: ' . $transaction->getAmount();
 
             return true;
-        } catch (WrongAMQPMessageFormat $exception) {
+        } catch (WrongAMQPMessageFormatException $exception) {
             return $this->releasableError($exception->getMessage());
         } catch (OptimisticLockException $exception) {
             return $this->processDBTransactionException($exception, $transaction ?? null);
@@ -83,9 +93,21 @@ abstract class BaseTransactionOperationConsumer implements ConsumerInterface
             return $this->processDBTransactionException($exception, $transaction ?? null);
         } catch (TransactionExistsException $exception) {
             return $this->releasableError($exception->getMessage());
+        } catch (AccountInsufficientFundsException $exception) {
+            return $this->releasableError($exception->getMessage());
         }
     }
 
+    /**
+     * While processing DB lock we must not release job from queue, just print exception and return false
+     * returning false will leave the message in queue for next worker to try again.
+     *
+     * @param Exception $exception
+     *
+     * @param Transaction|null $transaction
+     *
+     * @return bool
+     */
     protected function processDBTransactionException(Exception $exception, ?Transaction $transaction): bool
     {
         $this->printError($exception->getMessage());
@@ -97,23 +119,5 @@ abstract class BaseTransactionOperationConsumer implements ConsumerInterface
         }
 
         return false;
-    }
-
-    /**
-     * @param string $message
-     *
-     * @return bool
-     */
-    protected function releasableError(string $message): bool
-    {
-        $this->printError($message);
-        echo "Releasing faulty message from queue!\n";
-
-        return true;
-    }
-
-    protected function printError(string $message): void
-    {
-        echo $message . "\n";
     }
 }

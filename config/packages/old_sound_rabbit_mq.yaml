@@ -11,15 +11,19 @@ old_sound_rabbit_mq:
       connection: default
       exchange_options: {name: 'transaction-producer', type: direct}
   consumers:
-    credit_consumer:
+    credit_create:
       connection: default
       queue_options: {name: 'credit-queue'}
-      callback: App\MessageBroker\CreditConsumer
-    debit_consumer:
+      callback: App\MessageBroker\CreditCreateConsumer
+    debit_create:
       connection: default
       queue_options: {name: 'debit-queue'}
-      callback: App\MessageBroker\DebitConsumer
-    transfer_consumer:
+      callback: App\MessageBroker\DebitCreateConsumer
+    transfer_create:
       connection: default
       queue_options: {name: 'transfer-queue'}
-      callback: App\MessageBroker\TransferConsumer
+      callback: App\MessageBroker\TransferCreateConsumer
+    transaction_update:
+      connection: default
+      queue_options: {name: 'transaction-update'}
+      callback: App\MessageBroker\TransactionUpdate

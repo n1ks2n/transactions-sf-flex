@@ -3,7 +3,9 @@ declare(strict_types=1);
 
 namespace App\DTO;
 
-class TransactionDTO
+use App\DTO\Abstraction\TransactionDTO;
+
+class TransactionCreateDTO implements TransactionDTO
 {
     /**
      * @var string
@@ -36,7 +38,7 @@ class TransactionDTO
     /**
      * @param string $requestId
      *
-     * @return TransactionDTO
+     * @return TransactionCreateDTO
      */
     public function setRequestId(string $requestId): self
     {
@@ -56,7 +58,7 @@ class TransactionDTO
     /**
      * @param float $amount
      *
-     * @return TransactionDTO
+     * @return TransactionCreateDTO
      */
     public function setAmount(float $amount): self
     {
@@ -76,7 +78,7 @@ class TransactionDTO
     /**
      * @param int $accountId
      *
-     * @return TransactionDTO
+     * @return TransactionCreateDTO
      */
     public function setAccountId(int $accountId): self
     {
@@ -96,7 +98,7 @@ class TransactionDTO
     /**
      * @param string $type
      *
-     * @return TransactionDTO
+     * @return TransactionCreateDTO
      */
     public function setType(string $type): self
     {

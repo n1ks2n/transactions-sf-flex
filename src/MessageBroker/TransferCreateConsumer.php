@@ -4,13 +4,14 @@ declare(strict_types=1);
 namespace App\MessageBroker;
 
 use App\Enum\TransactionTypeEnum;
-use App\MessageBroker\Abstraction\BaseTransactionOperationConsumer;
+use App\MessageBroker\Abstraction\BaseCreateTransactionOperationConsumer;
 use PhpAmqpLib\Message\AMQPMessage;
 
-class TransferConsumer extends BaseTransactionOperationConsumer
+class TransferCreateConsumer extends BaseCreateTransactionOperationConsumer
 {
     /**
      * @param AMQPMessage $msg The message
+     *
      * @return mixed false to reject and requeue, any other value to acknowledge
      */
     public function execute(AMQPMessage $msg): bool
@@ -28,8 +29,8 @@ class TransferConsumer extends BaseTransactionOperationConsumer
             'type' => TransactionTypeEnum::CREDIT,
             'requestId' => $decodedMessage['requestId']
         ];
-        $debitSuccess = $this->processTransaction($debitMessage);
-        $creditSuccess = $this->processTransaction($creditMessage);
+        $debitSuccess = $this->processCreateTransaction($debitMessage);
+        $creditSuccess = $this->processCreateTransaction($creditMessage);
 
         return $debitSuccess && $creditSuccess;
     }

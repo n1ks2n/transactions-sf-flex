@@ -5,6 +5,6 @@ namespace App\Exception;
 
 use Exception;
 
-class WrongAMQPMessageFormat extends Exception
+class AccountInsufficientFundsException extends Exception
 {
 }

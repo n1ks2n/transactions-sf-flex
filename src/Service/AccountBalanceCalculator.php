@@ -6,25 +6,36 @@ namespace App\Service;
 use App\Entity\Account;
 use App\Entity\Transaction;
 use App\Enum\TransactionStatusEnum;
+use App\Enum\TransactionTypeEnum;
 
 class AccountBalanceCalculator
 {
+    /**
+     * @param Account $account
+     *
+     * @param Transaction $transaction
+     *
+     * @return Account
+     */
     public function calculate(Account $account, Transaction $transaction): Account
     {
         $transactionStatus = $transaction->getStatus();
-        $totalBalance = $account->getTotalBalance();
-        $account->setTotalBalance($totalBalance + $transaction->getAmount());
+        $blockedBalance = $account->getBlockedBalance();
+        $activeBalance = $account->getActiveBalance();
 
         if ($transactionStatus === TransactionStatusEnum::CREATED ||
             $transactionStatus === TransactionStatusEnum::PROCESSING
         ) {
-            $blockedBalance = $account->getBlockedBalance();
-            $account->setBlockedBalance($blockedBalance + $transaction->getAmount());
+            $account->setBlockedBalance($blockedBalance + abs($transaction->getAmount()));
+
+            if ($transaction->getType() === TransactionTypeEnum::DEBIT) {
+                $account->setActiveBalance($activeBalance + $transaction->getAmount());
+            }
 
             return $account;
         }
 
-        $activeBalance = $account->getActiveBalance();
+        $account->setBlockedBalance($blockedBalance - abs($transaction->getAmount()));
         $account->setActiveBalance($activeBalance + $transaction->getAmount());
 
         return $account;
