@@ -15,21 +15,9 @@ app.phpmd:
 
 app.tests.all:
 	make app.phpunit
-	make app.behat
 
 app.phpunit:
 	docker exec -t php_transactions /srv/transactions/bin/phpunit
-
-app.behat:
-	docker exec -t php_transactions vendor/bin/behat --no-interaction
-
-app.build.ci:
-	make app.docker.set_file_permissions
-	make app.docker_compose.build
-	make app.composer.install
-	make app.doctrine_migrations.ci
-	make app.doctrine.load_fixtures
-	cp behat.yml.dist behat.yml
 
 app.build.dev.no_docker:
 	make app.composer.install

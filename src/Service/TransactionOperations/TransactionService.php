@@ -14,7 +14,10 @@ use App\Exception\AccountInsufficientFundsException;
 use App\Exception\EntityNotFoundException;
 use App\Exception\TransactionExistsException;
 use App\Service\TransactionOperations\Abstraction\OperationServiceInterface;
+use Doctrine\DBAL\LockMode;
 use Doctrine\ORM\EntityManagerInterface;
+use Doctrine\ORM\OptimisticLockException;
+use Doctrine\ORM\PessimisticLockException;
 use RuntimeException;
 use Symfony\Component\EventDispatcher\EventDispatcherInterface;
 
@@ -109,6 +112,8 @@ class TransactionService implements OperationServiceInterface
      * @return Transaction
      *
      * @throws EntityNotFoundException
+     * @throws OptimisticLockException
+     * @throws PessimisticLockException
      */
     public function update(TransactionUpdateDTO $transactionUpdateDTO): Transaction
     {
@@ -121,6 +126,7 @@ class TransactionService implements OperationServiceInterface
         }
 
         if ($this->transactionStatusChecker->canBeChanged($transaction, $transactionUpdateDTO->getStatus())) {
+            $this->entityManager->lock($transaction, LockMode::PESSIMISTIC_READ);
             $transaction->setStatus($transactionUpdateDTO->getStatus());
             $this->entityManager->persist($transaction);
             $this->entityManager->flush();
